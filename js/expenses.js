@@ -19,28 +19,27 @@
     var api_path = '/api/expenses';
     
     expensesTracker.controller('mainController', function($scope, $http, $window, $filter){
-        scp = $scope;
-        scp.editing = false;
-        scp.formData = {};
+        $scope.editing = false;
+        $scope.formData = {};
         
         //Filter by amount; ascending/descending
-        scp.reOrderByAmount = function(){
-            var selected_option = scp.amount_select;
+        $scope.reOrderByAmount = function(){
+            var selected_option = $scope.amount_select;
             if (selected_option !== ''){
                 var order_field = (selected_option=== 'low_to_high') ? 'amount' : '-amount';
-                scp.expenses = $filter('orderBy')(scp.expenses, order_field);
+                $scope.expenses = $filter('orderBy')($scope.expenses, order_field);
             }
         };
         
-        scp.editExpense = function(expense){
-            scp.editing = !scp.editing;
-            scp.formData = angular.copy(expense);
+        $scope.editExpense = function(expense){
+            $scope.editing = !$scope.editing;
+            $scope.formData = angular.copy(expense);
         };
         
         //get all expenses by default
         $http.get(api_path)
             .success(function(data){
-                scp.expenses = data;
+                $scope.expenses = data;
                 //console.log(data);
             })
             .error(function(err){
@@ -49,14 +48,14 @@
             });
             
         //add an expense
-        scp.addExpense = function(isValid){
+        $scope.addExpense = function(isValid){
             
             //console.log('isValid: '+isValid);
             if (isValid){//check if form is valid
-                $http.post(api_path, scp.formData)
+                $http.post(api_path, $scope.formData)
                     .success(function(data){
-                        scp.formData = {}; //clear form for new input
-                        scp.expenses = data;
+                        $scope.formData = {}; //clear form for new input
+                        $scope.expenses = data;
                     })
                     .error(function(err){
                         //console.log('Error: '+err);
@@ -67,11 +66,11 @@
         };
         
         //delete an expense
-        scp.deleteExpense = function(expense_id){
+        $scope.deleteExpense = function(expense_id){
             if ($window.confirm('Are you sure you want to delete this record?')){
                 $http.delete(api_path + '/' + expense_id)
                     .success(function(data){
-                        scp.expenses = data;
+                        $scope.expenses = data;
                         //console.log(data);
                     })
                     .error(function(err){
@@ -83,14 +82,14 @@
         };
         
         //update an expense
-        scp.updateExpense = function(expense_id){
+        $scope.updateExpense = function(expense_id){
             //console.log('expense_id: '+expense_id);
-            $http.put(api_path + '/' + expense_id, scp.formData)
+            $http.put(api_path + '/' + expense_id, $scope.formData)
                 .success(function(data){
-                   scp.formData = {}; //reset form
-                   scp.expenses = data;
+                   $scope.formData = {}; //reset form
+                   $scope.expenses = data;
                    
-                   scp.editing = !scp.editing; //toggle editing
+                   $scope.editing = !$scope.editing; //toggle editing
                 });
         };
     });
