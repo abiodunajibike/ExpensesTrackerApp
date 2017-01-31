@@ -1,0 +1,127 @@
+<!--index.html -->
+<!doctype html>
+    
+<html>
+    <head>
+        
+    </head>
+    
+    <!-- META -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><!--Optimize view port -->
+    
+    <title>Expenses Tracker Angular App</title>
+    
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
+    
+    <style>
+        .row-fluid{ padding-top: 10px;
+        }
+    </style>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    
+    <script src="js/expensesTracker.js"></script>
+    
+    <head>
+        <body ng-app="expensesTracker" ng-controller="mainController">
+            <div class="container">
+                
+                <div class="row-fluid text-center">
+                    <h1><span class="label label-info">Expenses Tracker MEAN App</span></h1>
+                </div>
+                
+                <div class='text-right'>
+                    <div class="row-fluid">
+                        <label>
+                            <!-- Arrange by Amount: <br/>-->
+                             <select class="form-control" ng-model="amount_select" ng-change="reOrderByAmount()">
+                                 <option value="">Filter by Amount</option>
+                                 <option value="low_to_high">Lowest to Highest Amount</option>
+                                 <option value="high_to_low">Highest to Lowest Amount</option>
+                             </select>
+                        </label>
+                    </div>
+                    
+                    <div class="row-fluid">
+                        <label>
+                            <input type="text" class="form-control" ng-model="descText" placeholder="Filter by description"/>
+                        </label>
+                    </div>
+                    
+                </div>
+                
+                <div class="col-sm-12" style="padding-top: 30px;">
+                    
+                    <div class="col-sm-4">
+                        <h4 class="row-fluid">Add an Expense</h4>
+                        
+                        <!--<button class="btn" ng-click="reOrderByTweets()">reOrderByTweets</button>-->
+                       
+                        <!--<div class="form-group">-->
+                            <form name="expenseForm" novalidate>
+                                
+                                <div class="form-group" ng-class="{'has-error': expenseForm.description.$invalid && !expenseForm.description.$pristine}">
+                                    <label>Description</label>
+                                    <input type="text" class="form-control" ng-model="formData.description" ng-minlength="3" required/>
+                                    <span class="text-danger" ng-show="expenseForm.description.$error.minlength" class="help-block">
+                                        Expense description is too short.
+                                    </span>
+                                </div>
+                                
+                                <div class="form-group" ng-class="{'has-error': expenseForm.amount.$invalid && !expenseForm.amount.$pristine}">
+                                    <label>Amount</label>
+                                    <input type="number" class="form-control" ng-model="formData.amount" required/>
+                                    <span class="text-danger" ng-show="expenseForm.amount.$invalid && !expenseForm.amount.$pristine" class="help-block">
+                                        Expense amount is a number and required.
+                                    </span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Date</label>
+                                    <!--<input type="text" name="when" class="form-control" ng-model="formData.when" required/>-->
+                                    <input type="date" class="form-control" ng-model="formData.when" format-date required/>                                    
+                                </div>
+                                
+                                <div class="form-group">
+                                    <button type="submit" ng-hide="editing" class="btn btn-primary" ng-disabled="expenseForm.$invalid" ng-click="addExpense(expenseForm.$valid)">Add</button>
+                                    <button type="submit" ng-show="editing" class="btn btn-primary" ng-disabled="expenseForm.$invalid" ng-click="updateExpense(formData._id)">Update</button>
+                                </div>
+                               
+                            </form>
+                        <!--</div>-->
+                        
+                    </div>
+                    
+                    <div class="col-sm-8">
+                        <h4 class="text-center">List of added expenses</h4>
+                        <table class="table table-bordered" style="position: relative; top: 31px;">
+                            <thead>
+                                <tr>
+                                  <th>S/N</th>
+                                  <th>Description</th>
+                                  <th>Amount</th>
+                                  <th>Date</th>
+                                  <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                              <tr ng-repeat="expense in expenses | filter: descText">
+                                <td>{{$index+1}}</td>
+                                <td>{{ expense.description }}</td>
+                                <td>£{{ expense.amount }}</td>
+                                <td>{{ expense.when | date }}</td>
+                                <td>
+                                    <a href="#"><span class="glyphicon glyphicon-edit" ng-click="editExpense(expense)"></span></a>
+                                    <a href="#" style="margin-left: 20px;" ng-click="deleteExpense(expense._id)"><span class="glyphicon glyphicon-trash"></span></a>
+                                </td>
+                              </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                </div>
+                
+            </div>
+        </body>
+    </head>
+</html>
